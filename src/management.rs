@@ -45,6 +45,7 @@ impl Api {
                 .json::<client_credentials_flow::Response>()
                 .await?,
         ));
+        tracing::info!("Fetched access token (client_credentials) from Auth0");
 
         // Spawn a thread to keep the access token up to date
         let token = access_token.clone();
@@ -64,6 +65,7 @@ impl Api {
                     .json::<client_credentials_flow::Response>()
                     .await
                     .unwrap();
+                tracing::info!("Refreshed access token (client_credentials) from Auth0");
             }
         });
 
