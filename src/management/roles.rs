@@ -3,7 +3,7 @@ use reqwest::RequestBuilder;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
-pub struct ListRequestParameters {
+pub struct ListRolesRequestParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub per_page: Option<u16>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15,13 +15,13 @@ pub struct ListRequestParameters {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct CreateRequestParameters {
+pub struct CreateRoleRequestParameters {
     pub name: String,
     pub description: String,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct UpdateRequestParameters {
+pub struct UpdateRoleRequestParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -34,15 +34,15 @@ pub struct AssignUsersToRoleRequestParameters {
 }
 
 pub trait Roles {
-    fn list(&self, request: ListRequestParameters) -> RequestBuilder;
+    fn list_roles(&self, request: ListRolesRequestParameters) -> RequestBuilder;
 
-    fn create(&self, request: CreateRequestParameters) -> RequestBuilder;
+    fn create_role(&self, request: CreateRoleRequestParameters) -> RequestBuilder;
 
-    fn get(&self, id: String) -> RequestBuilder;
+    fn get_role(&self, id: String) -> RequestBuilder;
 
-    fn delete(&self, id: String) -> RequestBuilder;
+    fn delete_role(&self, id: String) -> RequestBuilder;
 
-    fn update(&self, id: String, request: UpdateRequestParameters) -> RequestBuilder;
+    fn update_role(&self, id: String, request: UpdateRoleRequestParameters) -> RequestBuilder;
 
     fn assign_users_to_role(
         &self,
@@ -52,31 +52,31 @@ pub trait Roles {
 }
 
 impl Roles for Api {
-    fn list(&self, request: ListRequestParameters) -> RequestBuilder {
+    fn list_roles(&self, request: ListRolesRequestParameters) -> RequestBuilder {
         let endpoint = String::from("/api/v2/roles");
         let url = self.base_url.join(&endpoint).unwrap();
         self.apply_auth(self.client.get(url)).query(&request)
     }
 
-    fn create(&self, request: CreateRequestParameters) -> RequestBuilder {
+    fn create_role(&self, request: CreateRoleRequestParameters) -> RequestBuilder {
         let endpoint = String::from("/api/v2/roles");
         let url = self.base_url.join(&endpoint).unwrap();
         self.apply_auth(self.client.post(url)).json(&request)
     }
 
-    fn get(&self, id: String) -> RequestBuilder {
+    fn get_role(&self, id: String) -> RequestBuilder {
         let endpoint = format!("/api/v2/roles/{}", id);
         let url = self.base_url.join(&endpoint).unwrap();
         self.apply_auth(self.client.get(url))
     }
 
-    fn delete(&self, id: String) -> RequestBuilder {
+    fn delete_role(&self, id: String) -> RequestBuilder {
         let endpoint = format!("/api/v2/roles/{}", id);
         let url = self.base_url.join(&endpoint).unwrap();
         self.apply_auth(self.client.delete(url))
     }
 
-    fn update(&self, id: String, request: UpdateRequestParameters) -> RequestBuilder {
+    fn update_role(&self, id: String, request: UpdateRoleRequestParameters) -> RequestBuilder {
         let endpoint = format!("/api/v2/roles/{}", id);
         let url = self.base_url.join(&endpoint).unwrap();
         self.apply_auth(self.client.patch(url).json(&request))

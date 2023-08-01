@@ -79,9 +79,14 @@ impl Api {
     fn apply_auth(&self, rb: RequestBuilder) -> RequestBuilder {
         let token = self.access_token.clone();
         tokio::task::block_in_place(move || {
+            let token = &token.blocking_lock().clone();
             rb.header(
                 header::AUTHORIZATION,
-                header::HeaderValue::from_str(&token.blocking_lock().access_token.clone()).unwrap(),
+                header::HeaderValue::from_str(&format!(
+                    "{} {}",
+                    token.token_type, token.access_token
+                ))
+                .unwrap(),
             )
         })
     }
