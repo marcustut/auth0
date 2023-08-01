@@ -1,6 +1,7 @@
 use crate::authentication::Api;
 use reqwest::RequestBuilder;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
 pub struct RequestParameters {
@@ -21,7 +22,7 @@ pub struct RequestParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub picture: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_metadata: Option<String>,
+    pub user_metadata: Option<HashMap<String, String>>,
 }
 
 pub trait Signup {
