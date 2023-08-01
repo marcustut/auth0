@@ -29,7 +29,7 @@ pub struct UpdateRequestParameters {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct AssignUsersRequestParameters {
+pub struct AssignUsersToRoleRequestParameters {
     pub users: Vec<String>,
 }
 
@@ -44,7 +44,11 @@ pub trait Roles {
 
     fn update(&self, id: String, request: UpdateRequestParameters) -> RequestBuilder;
 
-    fn assign_users(&self, id: String, request: AssignUsersRequestParameters) -> RequestBuilder;
+    fn assign_users_to_role(
+        &self,
+        id: String,
+        request: AssignUsersToRoleRequestParameters,
+    ) -> RequestBuilder;
 }
 
 impl Roles for Api {
@@ -78,7 +82,11 @@ impl Roles for Api {
         self.apply_auth(self.client.patch(url).json(&request))
     }
 
-    fn assign_users(&self, id: String, request: AssignUsersRequestParameters) -> RequestBuilder {
+    fn assign_users_to_role(
+        &self,
+        id: String,
+        request: AssignUsersToRoleRequestParameters,
+    ) -> RequestBuilder {
         let endpoint = format!("/api/v2/roles/{}/users", id);
         let url = self.base_url.join(&endpoint).unwrap();
         self.apply_auth(self.client.post(url).json(&request))
