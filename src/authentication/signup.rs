@@ -25,6 +25,20 @@ pub struct RequestParameters {
     pub user_metadata: Option<HashMap<String, String>>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Response {
+    #[serde(rename = "_id")]
+    pub id: String,
+    pub email: String,
+    pub email_verified: bool,
+    pub username: Option<String>,
+    pub given_name: Option<String>,
+    pub family_name: Option<String>,
+    pub name: Option<String>,
+    pub nickname: Option<String>,
+    pub picture: Option<String>,
+}
+
 pub trait Signup {
     fn signup(&self, request: RequestParameters) -> RequestBuilder;
 }
