@@ -26,7 +26,7 @@ pub struct RequestParameters {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct Response {
+pub struct Response {
     #[serde(rename = "_id")]
     pub id: String,
     pub email: String,
