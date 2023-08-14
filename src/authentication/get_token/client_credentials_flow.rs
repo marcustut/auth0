@@ -11,7 +11,7 @@ pub struct RequestParameters {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Response {
     pub access_token: String,
-    pub scope: String,
+    pub scope: Option<String>,
     pub expires_in: u64,
     pub token_type: String,
 }

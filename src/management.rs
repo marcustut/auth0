@@ -1,8 +1,12 @@
 use std::sync::Arc;
 
-use crate::authentication::{
-    self,
-    get_token::{client_credentials_flow, GetToken},
+use crate::{
+    authentication::{
+        self,
+        get_token::{client_credentials_flow, GetToken},
+    },
+    error::Error,
+    models::AuthenticationResponse,
 };
 use reqwest::{header, Client, RequestBuilder, Url};
 use tokio::sync::Mutex;
@@ -21,7 +25,7 @@ impl Api {
         base_url: Url,
         client_id: String,
         client_secret: String,
-    ) -> Result<Self, reqwest::Error> {
+    ) -> Result<Self, Error> {
         let client = Self::build_client();
 
         // Instantiate a Authentication API client for getting client_credentials token
@@ -32,19 +36,25 @@ impl Api {
                 client_secret.clone(),
             ),
         );
+
+        tracing::info!("Fetching access token (client_credentials) from Auth0");
         let params = authentication::get_token::client_credentials_flow::RequestParameters {
             grant_type: "client_credentials".to_string(),
             client_id: client_id.clone(),
             client_secret: client_secret.clone(),
             audience: base_url.join("/api/v2/").unwrap().to_string(),
         };
-        let access_token = Arc::new(Mutex::new(
-            auth.client_credentials_flow(params.clone())
-                .send()
-                .await?
-                .json::<client_credentials_flow::Response>()
-                .await?,
-        ));
+        let access_token = match auth
+            .client_credentials_flow(params.clone())
+            .send()
+            .await?
+            .json::<AuthenticationResponse<client_credentials_flow::Response>>()
+            .await?
+        {
+            AuthenticationResponse::Success(r) => r,
+            AuthenticationResponse::Error(e) => return Err(e.into()),
+        };
+        let access_token = Arc::new(Mutex::new(access_token));
         tracing::info!("Fetched access token (client_credentials) from Auth0");
 
         // Spawn a thread to keep the access token up to date
