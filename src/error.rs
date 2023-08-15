@@ -18,7 +18,7 @@ pub struct ManagementErrorResponse {
 }
 
 #[derive(Debug, Clone, thiserror::Error, Deserialize, Serialize)]
-#[serde(tag = "error")]
+#[serde(tag = "error", rename_all = "snake_case")]
 pub enum AuthenticationError {
     #[error("Bad request: {0:?}")]
     InvalidRequest(AuthenticationErrorResponse),

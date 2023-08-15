@@ -13,5 +13,5 @@ pub struct Response {
     pub access_token: String,
     pub scope: Option<String>,
     pub expires_in: u64,
-    pub token_type: String,
+    pub token_type: Option<String>,
 }
