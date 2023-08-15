@@ -115,6 +115,7 @@ impl Api {
 mod tests {
     use super::*;
 
+    #[tracing_test::traced_test]
     #[tokio::test]
     async fn authentication_api_init() {
         let base_url = Url::parse("https://YOUR_DOMAIN").unwrap();
