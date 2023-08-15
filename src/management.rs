@@ -94,7 +94,8 @@ impl Api {
                 header::AUTHORIZATION,
                 header::HeaderValue::from_str(&format!(
                     "{} {}",
-                    token.token_type, token.access_token
+                    token.token_type.clone().unwrap_or("Bearer".to_string()),
+                    token.access_token
                 ))
                 .unwrap(),
             )
